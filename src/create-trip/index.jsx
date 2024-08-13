@@ -1,13 +1,27 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SelectBudgetOptions, SelectTravelList } from "@/constants/options";
+import {
+  AI_PROMPT,
+  SelectBudgetOptions,
+  SelectTravelList,
+} from "@/constants/options";
+import { chatSession } from "@/service/AIModal";
 import { useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const CreateTrip = () => {
   const [place, setPlace] = useState();
   const [formData, setFormData] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleInputChange = (name, value) => {
     setFormData({
@@ -16,7 +30,14 @@ const CreateTrip = () => {
     });
   };
 
-  const onGenerateTrip = () => {
+  const onGenerateTrip = async () => {
+    const user = localStorage.getItem("user");
+
+    if (!user) {
+      setOpenDialog(true);
+      return;
+    }
+
     if (
       (formData?.noOfDays > 5 && !formData?.location) ||
       !formData?.budget ||
@@ -25,6 +46,16 @@ const CreateTrip = () => {
       toast("Please, fill all details.");
       return;
     }
+
+    const finalPrompt = AI_PROMPT.replace(
+      "{location}",
+      formData?.location.label
+    )
+      .replace("{totalDays}", formData?.noOfDays)
+      .replace("{traveler}", formData?.traveler)
+      .replace("{budget}", formData?.budget);
+
+    const result = await chatSession.sendMessage(finalPrompt);
   };
 
   return (
@@ -103,6 +134,20 @@ const CreateTrip = () => {
       <div className="my-10 justify-end flex">
         <Button onClick={onGenerateTrip}>Generate Trip</Button>
       </div>
+
+      <Dialog open={openDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogDescription>
+              <img src="/logo.svg" alt="" />
+              <h2 className="font-bold text-lg mt-7">Sign In With Google</h2>
+              <p>Sign in to the App securely with Google authentication</p>
+
+              <Button className="w-full mt-5">Sign In With Google</Button>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
