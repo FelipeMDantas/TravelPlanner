@@ -14,9 +14,9 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import { FcGoogle } from "react-icons/fc";
+import axios from "axios";
 
 const CreateTrip = () => {
   const [place, setPlace] = useState();
@@ -29,6 +29,8 @@ const CreateTrip = () => {
       [name]: value,
     });
   };
+
+  const login = () => {};
 
   const onGenerateTrip = async () => {
     const user = localStorage.getItem("user");
@@ -56,6 +58,22 @@ const CreateTrip = () => {
       .replace("{budget}", formData?.budget);
 
     const result = await chatSession.sendMessage(finalPrompt);
+  };
+
+  const getUserInfo = async (tokenInfo) => {
+    axios
+      .get(
+        `https://www.googleapis.com/oauth2/v1/userInfo?access_token=${tokenInfo?.access_token}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenInfo?.access_token}`,
+            Accept: "Application/json",
+          },
+        }
+      )
+      .then((resp) => {
+        console.log(resp);
+      });
   };
 
   return (
@@ -143,7 +161,13 @@ const CreateTrip = () => {
               <h2 className="font-bold text-lg mt-7">Sign In With Google</h2>
               <p>Sign in to the App securely with Google authentication</p>
 
-              <Button className="w-full mt-5">Sign In With Google</Button>
+              <Button
+                className="w-full mt-5 flex gap-4 items-center"
+                onClick={login}
+              >
+                <FcGoogle className="h-7 w-7" />
+                Sign In With Google
+              </Button>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
