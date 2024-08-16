@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const CreateTrip = () => {
   const [place, setPlace] = useState();
@@ -30,7 +31,10 @@ const CreateTrip = () => {
     });
   };
 
-  const login = () => {};
+  const login = () =>
+    useGoogleLogin({
+      onSuccess: (codeResp) => getUserProfile(codeResp),
+    });
 
   const onGenerateTrip = async () => {
     const user = localStorage.getItem("user");
@@ -60,7 +64,7 @@ const CreateTrip = () => {
     const result = await chatSession.sendMessage(finalPrompt);
   };
 
-  const getUserInfo = async (tokenInfo) => {
+  const getUserProfile = async (tokenInfo) => {
     axios
       .get(
         `https://www.googleapis.com/oauth2/v1/userInfo?access_token=${tokenInfo?.access_token}`,
@@ -72,7 +76,9 @@ const CreateTrip = () => {
         }
       )
       .then((resp) => {
-        console.log(resp);
+        localStorage.setItem("user", JSON.stringify(resp.data));
+        setOpenDialog(false);
+        onGenerateTrip();
       });
   };
 
