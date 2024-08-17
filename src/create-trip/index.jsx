@@ -18,6 +18,8 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 import { useGoogleLogin } from "@react-oauth/google";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/service/firebaseConfig";
 
 const CreateTrip = () => {
   const [place, setPlace] = useState();
@@ -62,6 +64,10 @@ const CreateTrip = () => {
       .replace("{budget}", formData?.budget);
 
     const result = await chatSession.sendMessage(finalPrompt);
+  };
+
+  const saveAITrip = async (tripData) => {
+    await setDoc(doc(db, "cities", "LA"), {});
   };
 
   const getUserProfile = async (tokenInfo) => {
