@@ -25,6 +25,7 @@ const CreateTrip = () => {
   const [place, setPlace] = useState();
   const [formData, setFormData] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (name, value) => {
     setFormData({
@@ -55,6 +56,7 @@ const CreateTrip = () => {
       return;
     }
 
+    setLoading(true);
     const finalPrompt = AI_PROMPT.replace(
       "{location}",
       formData?.location.label
@@ -64,10 +66,25 @@ const CreateTrip = () => {
       .replace("{budget}", formData?.budget);
 
     const result = await chatSession.sendMessage(finalPrompt);
+    setLoading(false);
+
+    saveAITrip(result?.response?.text());
   };
 
   const saveAITrip = async (tripData) => {
-    await setDoc(doc(db, "cities", "LA"), {});
+    setLoading(true);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const docId = Date.now().toString();
+
+    await setDoc(doc(db, "AITrips", docId), {
+      userSelection: formData,
+      tripData: tripData,
+      userEmail: user?.email,
+      id: docId,
+    });
+
+    setLoading(false);
   };
 
   const getUserProfile = async (tokenInfo) => {
@@ -176,6 +193,7 @@ const CreateTrip = () => {
               <Button
                 className="w-full mt-5 flex gap-4 items-center"
                 onClick={login}
+                disabled={loading}
               >
                 <FcGoogle className="h-7 w-7" />
                 Sign In With Google
