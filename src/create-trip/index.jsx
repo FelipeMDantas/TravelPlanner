@@ -20,6 +20,7 @@ import axios from "axios";
 import { useGoogleLogin } from "@react-oauth/google";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/service/firebaseConfig";
+import { AiOutlineLoading3Quarters } from "react-icons";
 
 const CreateTrip = () => {
   const [place, setPlace] = useState();
@@ -79,7 +80,7 @@ const CreateTrip = () => {
 
     await setDoc(doc(db, "AITrips", docId), {
       userSelection: formData,
-      tripData: tripData,
+      tripData: JSON.parse(tripData),
       userEmail: user?.email,
       id: docId,
     });
@@ -179,7 +180,13 @@ const CreateTrip = () => {
       </div>
 
       <div className="my-10 justify-end flex">
-        <Button onClick={onGenerateTrip}>Generate Trip</Button>
+        <Button onClick={onGenerateTrip} disabled={loading}>
+          {loading ? (
+            <AiOutlineLoading3Quarters className="h-7 w-7 animate-spin" />
+          ) : (
+            "Generate Trip"
+          )}
+        </Button>
       </div>
 
       <Dialog open={openDialog}>
@@ -193,7 +200,6 @@ const CreateTrip = () => {
               <Button
                 className="w-full mt-5 flex gap-4 items-center"
                 onClick={login}
-                disabled={loading}
               >
                 <FcGoogle className="h-7 w-7" />
                 Sign In With Google
