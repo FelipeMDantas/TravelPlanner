@@ -20,13 +20,16 @@ import axios from "axios";
 import { useGoogleLogin } from "@react-oauth/google";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/service/firebaseConfig";
-import { AiOutlineLoading3Quarters } from "react-icons";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 const CreateTrip = () => {
   const [place, setPlace] = useState();
   const [formData, setFormData] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleInputChange = (name, value) => {
     setFormData({
@@ -86,6 +89,7 @@ const CreateTrip = () => {
     });
 
     setLoading(false);
+    navigate(`/view-trip/${docId}`);
   };
 
   const getUserProfile = async (tokenInfo) => {
