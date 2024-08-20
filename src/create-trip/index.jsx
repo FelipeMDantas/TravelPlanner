@@ -66,7 +66,7 @@ const CreateTrip = () => {
       formData?.location.label
     )
       .replace("{totalDays}", formData?.noOfDays)
-      .replace("{traveler}", formData?.traveler)
+      .replace("{travelers}", formData?.travelers)
       .replace("{budget}", formData?.budget);
 
     const result = await chatSession.sendMessage(finalPrompt);
