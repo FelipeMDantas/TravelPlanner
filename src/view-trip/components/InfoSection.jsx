@@ -26,7 +26,7 @@ const InfoSection = ({ trip }) => {
   return (
     <div>
       <img
-        src={photoUrl}
+        src={photoUrl ? photoUrl : "/placeholder.jpg"}
         className="h-[300px] w-full object-cover rounded-xl"
       />
       <div className="flex justify-between items-center">

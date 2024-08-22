@@ -29,7 +29,7 @@ const HotelCardItem = ({ hotel }) => {
     >
       <div className="hover:scale-105 transition-all cursor-pointer">
         <img
-          src={photoUrl}
+          src={photoUrl ? photoUrl : "/placeholder.jpg"}
           className="rounded-xl h-[180px] w-full object-cover"
         />
         <div className="my-2 flex flex-col gap-2">

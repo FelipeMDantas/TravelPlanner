@@ -32,8 +32,8 @@ const PlaceCardItem = ({ place }) => {
     cursor-pointer"
       >
         <img
-          src="/placeholder.jpg"
-          className="w-[130px] h-[130px] rounded-xl"
+          src={photoUrl ? photoUrl : "/placeholder.jpg"}
+          className="w-[130px] h-[130px] rounded-xl object-cover"
         />
         <div>
           <h2 className="font-bold text-lg">{place.placeName}</h2>
