@@ -49,6 +49,11 @@ const Header = () => {
       <div>
         {user ? (
           <div className="flex items-center gap-3">
+            <a href="/create-trip">
+              <Button className="rounded-full" variant="outline">
+                + Create Trip
+              </Button>
+            </a>
             <a href="/my-trips">
               <Button className="rounded-full" variant="outline">
                 My Trips
